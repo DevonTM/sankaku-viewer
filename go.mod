@@ -2,7 +2,10 @@ module sankaku
 
 go 1.20
 
-require github.com/valyala/fasthttp v1.48.0
+require (
+	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/valyala/fasthttp v1.48.0
+)
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect

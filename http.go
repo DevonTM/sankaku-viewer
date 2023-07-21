@@ -8,7 +8,9 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 
+	"github.com/patrickmn/go-cache"
 	"github.com/valyala/fasthttp"
 )
 
@@ -26,6 +28,8 @@ type PageData struct {
 	Height int
 	Size   int
 }
+
+var c = cache.New(10*time.Minute, 1*time.Hour)
 
 func ListenAndServe(addr string) error {
 	ln, err := Listen(addr)
@@ -86,14 +90,21 @@ func handler(ctx *fasthttp.RequestCtx) {
 			})
 			return
 		}
-		data, err := getData(id)
-		if err != nil {
-			render(ctx, PageData{
-				Loc:   loc,
-				Type:  typ,
-				Error: err.Error(),
-			})
-			return
+		var data *PostData
+		d, ok := c.Get(id)
+		if !ok {
+			data, err = getData(id)
+			if err != nil {
+				render(ctx, PageData{
+					Loc:   loc,
+					Type:  typ,
+					Error: err.Error(),
+				})
+				return
+			}
+			c.Set(id, data, cache.DefaultExpiration)
+		} else {
+			data = d.(*PostData)
 		}
 		if data.URL == "" {
 			render(ctx, PageData{
