@@ -14,6 +14,7 @@ const APIPosts = "https://capi-v2.sankakucomplex.com/posts"
 type Tag struct {
 	Name string `json:"name"`
 	Type int    `json:"type"`
+	ID   int    `json:"id"`
 }
 
 type PostData struct {
@@ -26,6 +27,7 @@ type PostData struct {
 	Width   int    `json:"width"`
 	Height  int    `json:"height"`
 	Size    int    `json:"file_size"`
+	ID      int    `json:"id"`
 }
 
 func GetPost(id string) (*PostData, error) {

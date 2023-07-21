@@ -18,8 +18,7 @@ type PageData struct {
 	Title  string
 	Loc    string
 	URL    string
-	SURL   string
-	PURL   string
+	Poster string
 	Type   string
 	Format string
 	Ori    string
@@ -27,6 +26,7 @@ type PageData struct {
 	Width  int
 	Height int
 	Size   int
+	ID     int
 }
 
 var c = cache.New(10*time.Minute, 1*time.Hour)
@@ -68,24 +68,47 @@ func listen(addr string) (net.Listener, error) {
 }
 
 func handler(ctx *fasthttp.RequestCtx) {
-	if string(ctx.Path()) == "/favicon.ico" {
+	switch string(ctx.Path()) {
+	case "/favicon.ico":
 		ctx.SendFile("./static/favicon.ico")
 		return
-	}
-	if string(ctx.Path()) == "/logo.png" {
+	case "/logo.png":
 		ctx.SendFile("./static/logo.png")
 		return
 	}
 
-	loc := string(ctx.URI().Scheme()) + "://" + string(ctx.URI().Host()) + "/"
-	typ := "website"
+	if ctx.QueryArgs().Has("id") && ctx.QueryArgs().Has("type") {
+		id := string(ctx.QueryArgs().Peek("id"))
+		data, err := getData(id)
+		if err != nil {
+			ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+			_, _ = ctx.WriteString(err.Error())
+			return
+		}
+		typ := string(ctx.QueryArgs().Peek("type"))
+		switch typ {
+		case "url":
+			ctx.Redirect(data.URL, fasthttp.StatusFound)
+		case "surl":
+			ctx.Redirect(data.Sample, fasthttp.StatusFound)
+		case "purl":
+			ctx.Redirect(data.Preview, fasthttp.StatusFound)
+		}
+		return
+	}
+
+	scheme := string(ctx.URI().Scheme())
+	if ctx.Request.Header.Peek("X-Forwarded-Proto") != nil {
+		scheme = string(ctx.Request.Header.Peek("X-Forwarded-Proto"))
+	}
+	loc := scheme + "://" + string(ctx.URI().Host()) + "/"
+
 	if ctx.QueryArgs().Has("url") {
 		URL := string(ctx.QueryArgs().Peek("url"))
 		id, err := getID(URL)
 		if err != nil {
 			render(ctx, PageData{
 				Loc:   loc,
-				Type:  typ,
 				Error: err.Error(),
 			})
 			return
@@ -94,35 +117,33 @@ func handler(ctx *fasthttp.RequestCtx) {
 		if err != nil {
 			render(ctx, PageData{
 				Loc:   loc,
-				Type:  typ,
 				Error: err.Error(),
 			})
 			return
 		}
+		var typ string
 		if strings.Contains(data.Content, "/") {
 			typ = strings.Split(data.Content, "/")[0]
 		} else {
 			typ = data.Content
 		}
 		ori := strings.Split(URL, "?")[0]
-		loc += "?url=" + url.QueryEscape(ori)
 		render(ctx, PageData{
 			Loc:    loc,
 			Type:   typ,
 			Ori:    ori,
 			Title:  data.Name,
 			URL:    data.URL,
-			SURL:   data.Sample,
-			PURL:   data.Preview,
+			Poster: data.Preview,
 			Format: data.Content,
 			Width:  data.Width,
 			Height: data.Height,
 			Size:   data.Size,
+			ID:     data.ID,
 		})
 	} else {
 		render(ctx, PageData{
-			Loc:  loc,
-			Type: typ,
+			Loc: loc,
 		})
 	}
 }

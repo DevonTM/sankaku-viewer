@@ -7,13 +7,13 @@
     <meta name="referrer" content="no-referrer">
     <meta name="description" content="Sankaku Content Grabber">
     <meta property="og:title" content="Sankaku Viewer">
-    <meta property="og:url" content="{{ .Loc }}">
-    <meta property="og:type" content="{{ .Type }}">
+    <meta property="og:type" content="website">
     {{ if .URL }}
+        <meta property="og:url" content="{{ .Loc }}?url={{ .Ori }}">
         <meta property="og:description" content="{{ .Title }} ({{ .Type }})">
         <meta property="og:image:alt" content="{{ .Size }} bytes">
         {{ if eq .Type "image" }}
-            <meta property="og:image" content="{{ .URL }}">
+            <meta property="og:image" content="{{ .Loc }}?id={{ .ID }}&type=url">
             <meta property="og:image:type" content="{{ .Format }}">
             <meta property="og:image:width" content="{{ .Width }}">
             <meta property="og:image:height" content="{{ .Height }}">
@@ -22,15 +22,15 @@
             <meta property="twitter:site" content="@sankakucomplex">
             {{ if le .Size 5242880 }}
                 <meta property="twitter:description" content="{{ .Title }} ({{ .Type }})">
-                <meta property="twitter:image" content="{{ .URL }}">
+                <meta property="twitter:image" content="{{ .Loc }}?id={{ .ID }}&type=url">
             {{ else }}
                 <meta property="twitter:description" content="{{ .Title }} (compressed {{ .Type }})">
-                <meta property="twitter:image" content="{{ .SURL }}">
+                <meta property="twitter:image" content="{{ .Loc }}?id={{ .ID }}&type=surl">
             {{ end }}
             <meta property="twitter:image:alt" content="{{ .Size }} bytes">
         {{ else if eq .Type "video" }}
-            <meta property="og:image" content="{{ .PURL }}">
-            <meta property="og:video" content="{{ .URL }}">
+            <meta property="og:image" content="{{ .Loc }}?id={{ .ID }}&type=purl">
+            <meta property="og:video" content="{{ .Loc }}?id={{ .ID }}&type=url">
             <meta property="og:video:type" content="{{ .Format }}">
             <meta property="og:video:width" content="{{ .Width }}">
             <meta property="og:video:height" content="{{ .Height }}">
@@ -38,7 +38,9 @@
         {{ end }}
         <title>{{ .Title }}</title>
     {{ else }}
+        <meta property="og:url" content="{{ .Loc }}">
         <meta property="og:description" content="Sankaku Content Grabber">
+        <meta property="og:image:alt" content="27522 bytes">
         <meta property="og:image" content="{{ .Loc }}logo.png">
         <title>Sankaku Viewer</title>
     {{ end }}
@@ -128,7 +130,7 @@
                             "allowDownload": false,
                             "playButtonShowing": true,
                             "fillToContainer": true,
-                            "posterImage": "{{ .PURL }}"
+                            "posterImage": "{{ .Poster }}"
                         },
                         "vastOptions": {
                             "adList": [],
