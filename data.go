@@ -25,7 +25,7 @@ type PostData struct {
 	Size   int `json:"file_size"`
 }
 
-func getData(id, ua string) (*PostData, error) {
+func getData(id string) (*PostData, error) {
 	payload := url.Values{}
 	payload.Set("lang", "en")
 	payload.Set("page", "1")
@@ -48,7 +48,7 @@ func getData(id, ua string) (*PostData, error) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Origin", "https://sankaku.app")
 	req.Header.Set("Referer", "https://sankaku.app/")
-	req.Header.Set("User-Agent", ua)
+	req.Header.Set("User-Agent", "SCChannelApp/4.0")
 	if Token != "" {
 		req.Header.Set("Authorization", Token)
 	}

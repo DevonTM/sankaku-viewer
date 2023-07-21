@@ -86,7 +86,7 @@ func handler(ctx *fasthttp.RequestCtx) {
 			})
 			return
 		}
-		data, err := getData(id, string(ctx.UserAgent()))
+		data, err := getData(id)
 		if err != nil {
 			render(ctx, PageData{
 				Loc:   loc,
