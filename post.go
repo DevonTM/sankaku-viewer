@@ -46,7 +46,7 @@ func GetPost(id string) (*PostData, error) {
 
 	req, err := http.NewRequest(http.MethodGet, URL, http.NoBody)
 	if err != nil {
-		return nil, errors.New("failed to create request")
+		return nil, errors.New("Failed to create request: " + err.Error())
 	}
 
 	req.Header.Set("Accept", "application/vnd.sankaku.api+json;v=2")
@@ -60,7 +60,7 @@ func GetPost(id string) (*PostData, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, errors.New("failed to send request")
+		return nil, errors.New("Failed to send request: " + err.Error())
 	}
 	defer resp.Body.Close()
 
@@ -70,7 +70,7 @@ func GetPost(id string) (*PostData, error) {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, errors.New("failed to read response body")
+		return nil, errors.New("Failed to read response body: " + err.Error())
 	}
 
 	var data []PostData

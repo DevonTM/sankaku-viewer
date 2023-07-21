@@ -20,12 +20,12 @@ func Login(username, password string) error {
 
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		return errors.New("failed to marshal login payload")
+		return errors.New("Failed to marshal login payload: " + err.Error())
 	}
 
 	req, err := http.NewRequest(http.MethodPost, APIAuth, bytes.NewBuffer(jsonPayload))
 	if err != nil {
-		return errors.New("failed to create login request")
+		return errors.New("Failed to create login request: " + err.Error())
 	}
 
 	req.Header.Set("Accept", "application/vnd.sankaku.api+json;v=2")
@@ -34,21 +34,21 @@ func Login(username, password string) error {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return errors.New("failed to send login request")
+		return errors.New("Failed to send login request: " + err.Error())
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
-			return errors.New("invalid username or password")
+			return errors.New("Invalid username or password")
 		}
-		return fmt.Errorf("login request failed with status code: %d", resp.StatusCode)
+		return fmt.Errorf("Login request failed with status code: %d", resp.StatusCode)
 	}
 
 	var response map[string]interface{}
 	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
-		return errors.New("failed to decode login token")
+		return errors.New("Failed to decode login token: " + err.Error())
 	}
 
 	Token = fmt.Sprintf("Bearer %v", response["access_token"])

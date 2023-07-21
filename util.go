@@ -26,7 +26,7 @@ func getData(id string) (data *PostData, err error) {
 	if ok {
 		data, ok = d.(*PostData)
 		if !ok {
-			err = errors.New("unable to get data from cache")
+			err = errors.New("Unable to get data from cache")
 		}
 	} else {
 		data, err = GetPost(id)
@@ -34,7 +34,7 @@ func getData(id string) (data *PostData, err error) {
 			if data.URL != "" {
 				c.Set(id, data, cache.DefaultExpiration)
 			} else {
-				err = errors.New("login required")
+				err = errors.New("Login required")
 			}
 		}
 	}
@@ -67,10 +67,10 @@ func getName(tags []Tag) string {
 func getID(rawURL string) (string, error) {
 	URL, err := url.Parse(rawURL)
 	if err != nil {
-		return "", errors.New("cannot parse URL")
+		return "", errors.New("Cannot parse URL: " + err.Error())
 	}
 	if path.Dir(URL.Path) != "/post/show" {
-		return "", errors.New("invalid URL")
+		return "", errors.New("Invalid URL")
 	}
 	return path.Base(URL.Path), nil
 }
