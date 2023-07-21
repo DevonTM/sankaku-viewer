@@ -11,21 +11,24 @@ import (
 
 const APIPosts = "https://capi-v2.sankakucomplex.com/posts"
 
+type Tag struct {
+	Name string `json:"name"`
+	Type int    `json:"type"`
+}
+
 type PostData struct {
+	Name    string `json:"-"`
 	Sample  string `json:"sample_url"`
 	Preview string `json:"preview_url"`
 	URL     string `json:"file_url"`
 	Content string `json:"file_type"`
-	Tags    []struct {
-		Name string `json:"name"`
-		Type int    `json:"type"`
-	} `json:"tags"`
-	Width  int `json:"width"`
-	Height int `json:"height"`
-	Size   int `json:"file_size"`
+	Tags    []Tag  `json:"tags"`
+	Width   int    `json:"width"`
+	Height  int    `json:"height"`
+	Size    int    `json:"file_size"`
 }
 
-func getData(id string) (*PostData, error) {
+func GetPost(id string) (*PostData, error) {
 	payload := url.Values{}
 	payload.Set("lang", "en")
 	payload.Set("page", "1")
@@ -73,5 +76,30 @@ func getData(id string) (*PostData, error) {
 		return nil, errors.New("Failed to parse response body: " + err.Error())
 	}
 
+	data[0].Name = getName(data[0].Tags)
+
 	return &data[0], nil
+}
+
+func getName(tags []Tag) string {
+	var names [2]string
+	for _, tag := range tags {
+		if tag.Type == 3 {
+			names[1] = tag.Name
+		} else if tag.Type == 4 {
+			names[0] = tag.Name
+		}
+		if names[0] != "" && names[1] != "" {
+			break
+		}
+	}
+	switch {
+	case names[0] != "" && names[1] != "":
+		return names[0] + " - " + names[1]
+	case names[0] == "":
+		return names[1]
+	case names[1] == "":
+		return names[0]
+	}
+	return "Sankaku Content"
 }

@@ -32,7 +32,7 @@ type PageData struct {
 var c = cache.New(10*time.Minute, 1*time.Hour)
 
 func ListenAndServe(addr string) error {
-	ln, err := Listen(addr)
+	ln, err := listen(addr)
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func ListenAndServe(addr string) error {
 	return err
 }
 
-func Listen(addr string) (net.Listener, error) {
+func listen(addr string) (net.Listener, error) {
 	network := "tcp"
 	if strings.HasPrefix(addr, "unix:") {
 		addr = strings.TrimPrefix(addr, "unix:")
@@ -90,27 +90,12 @@ func handler(ctx *fasthttp.RequestCtx) {
 			})
 			return
 		}
-		var data *PostData
-		d, ok := c.Get(id)
-		if !ok {
-			data, err = getData(id)
-			if err != nil {
-				render(ctx, PageData{
-					Loc:   loc,
-					Type:  typ,
-					Error: err.Error(),
-				})
-				return
-			}
-			c.Set(id, data, cache.DefaultExpiration)
-		} else {
-			data = d.(*PostData)
-		}
-		if data.URL == "" {
+		data, err := getData(id)
+		if err != nil {
 			render(ctx, PageData{
 				Loc:   loc,
 				Type:  typ,
-				Error: "login required",
+				Error: err.Error(),
 			})
 			return
 		}
@@ -121,12 +106,11 @@ func handler(ctx *fasthttp.RequestCtx) {
 		}
 		ori := strings.Split(URL, "?")[0]
 		loc += "?url=" + url.QueryEscape(ori)
-		title := getName(data)
 		render(ctx, PageData{
-			Title:  title,
 			Loc:    loc,
 			Type:   typ,
 			Ori:    ori,
+			Title:  data.Name,
 			URL:    data.URL,
 			SURL:   data.Sample,
 			PURL:   data.Preview,
@@ -159,6 +143,26 @@ func render(ctx *fasthttp.RequestCtx, data interface{}) {
 	}
 }
 
+func getData(id string) (data *PostData, err error) {
+	d, ok := c.Get(id)
+	if ok {
+		data, ok = d.(*PostData)
+		if !ok {
+			err = errors.New("unable to get data from cache")
+		}
+	} else {
+		data, err = GetPost(id)
+		if err == nil {
+			if data.URL != "" {
+				c.Set(id, data, cache.DefaultExpiration)
+			} else {
+				err = errors.New("login required")
+			}
+		}
+	}
+	return
+}
+
 func getID(rawURL string) (string, error) {
 	URL, err := url.Parse(rawURL)
 	if err != nil {
@@ -168,27 +172,4 @@ func getID(rawURL string) (string, error) {
 		return "", errors.New("invalid URL")
 	}
 	return path.Base(URL.Path), nil
-}
-
-func getName(data *PostData) string {
-	var names [2]string
-	for _, tag := range data.Tags {
-		if tag.Type == 3 {
-			names[1] = tag.Name
-		} else if tag.Type == 4 {
-			names[0] = tag.Name
-		}
-		if names[0] != "" && names[1] != "" {
-			break
-		}
-	}
-	switch {
-	case names[0] != "" && names[1] != "":
-		return names[0] + " - " + names[1]
-	case names[0] == "":
-		return names[1]
-	case names[1] == "":
-		return names[0]
-	}
-	return "Sankaku Content"
 }
