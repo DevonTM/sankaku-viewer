@@ -18,6 +18,7 @@ fi
 echo "Building the project..."
 mkdir -p $DIR
 cp LICENSE $DIR/
+cp static $DIR/ -r
 env GOOS=$OS GOARCH=$ARCH go build -v -o $DIR/$NAME -trimpath -ldflags "-s -w" cmd/sankaku/main.go
 tar cf $DIR.tar $DIR --format=posix --owner=0 --group=0
 gzip -9 $DIR.tar
