@@ -7,13 +7,14 @@
     <meta name="referrer" content="no-referrer">
     <meta name="description" content="Sankaku Content Grabber">
     <meta property="og:title" content="Sankaku Viewer">
-    <meta property="og:type" content="website">
+    
     {{ if .URL }}
-        <meta property="og:url" content="{{ .Loc }}?url={{ .Ori }}">
+        <meta property="og:url" content="{{ .Loc }}get?url={{ .Ori }}">
+        <meta property="og:type" content="{{ .Type }}">
         <meta property="og:description" content="{{ .Title }} ({{ .Type }})">
         <meta property="og:image:alt" content="{{ .Size }} bytes">
         {{ if eq .Type "image" }}
-            <meta property="og:image" content="{{ .Loc }}?id={{ .ID }}&type=url">
+            <meta property="og:image" content="{{ .Loc }}image?id={{ .ID }}&type=url">
             <meta property="og:image:type" content="{{ .Format }}">
             <meta property="og:image:width" content="{{ .Width }}">
             <meta property="og:image:height" content="{{ .Height }}">
@@ -22,15 +23,15 @@
             <meta name="twitter:site" content="@sankakucomplex">
             {{ if le .Size 5242880 }}
                 <meta name="twitter:description" content="{{ .Title }} ({{ .Type }})">
-                <meta name="twitter:image" content="{{ .Loc }}?id={{ .ID }}&type=url">
+                <meta name="twitter:image" content="{{ .Loc }}image?id={{ .ID }}&type=url">
             {{ else }}
                 <meta name="twitter:description" content="{{ .Title }} (compressed {{ .Type }})">
-                <meta name="twitter:image" content="{{ .Loc }}?id={{ .ID }}&type=surl">
+                <meta name="twitter:image" content="{{ .Loc }}image?id={{ .ID }}&type=surl">
             {{ end }}
             <meta name="twitter:image:alt" content="{{ .Size }} bytes">
         {{ else if eq .Type "video" }}
-            <meta property="og:image" content="{{ .Loc }}?id={{ .ID }}&type=purl">
-            <meta property="og:video" content="{{ .Loc }}?id={{ .ID }}&type=url">
+            <meta property="og:image" content="{{ .Loc }}image?id={{ .ID }}&type=purl">
+            <meta property="og:video" content="{{ .Loc }}video?id={{ .ID }}&type=url">
             <meta property="og:video:type" content="{{ .Format }}">
             <meta property="og:video:width" content="{{ .Width }}">
             <meta property="og:video:height" content="{{ .Height }}">
@@ -39,6 +40,7 @@
         <title>{{ .Title }}</title>
     {{ else }}
         <meta property="og:url" content="{{ .Loc }}">
+        <meta property="og:type" content="website">
         <meta property="og:description" content="Sankaku Content Grabber">
         <meta property="og:image:alt" content="27522 bytes">
         <meta property="og:image" content="{{ .Loc }}logo.png">
@@ -91,7 +93,7 @@
 </style>
 <body>
     <h2>Sankaku Viewer</h2>
-    <form action="" method="get">
+    <form action="get" method="get">
         <label for="input">Sankaku URL:</label>
         <input type="text" name="url" id="input" placeholder="https://sankaku.app/post/show/id">
         <input type="submit" id="submit" value="GET">
