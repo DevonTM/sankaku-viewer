@@ -82,26 +82,3 @@ func GetPost(id string) (*PostData, error) {
 
 	return &data[0], nil
 }
-
-func getName(tags []Tag) string {
-	var names [2]string
-	for _, tag := range tags {
-		if tag.Type == 3 {
-			names[1] = tag.Name
-		} else if tag.Type == 4 {
-			names[0] = tag.Name
-		}
-		if names[0] != "" && names[1] != "" {
-			break
-		}
-	}
-	switch {
-	case names[0] != "" && names[1] != "":
-		return names[0] + " - " + names[1]
-	case names[0] == "":
-		return names[1]
-	case names[1] == "":
-		return names[0]
-	}
-	return "Sankaku Content"
-}

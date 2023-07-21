@@ -1,12 +1,9 @@
 package sankaku
 
 import (
-	"errors"
 	"html/template"
 	"net"
-	"net/url"
 	"os"
-	"path"
 	"strings"
 	"time"
 
@@ -38,7 +35,7 @@ func ListenAndServe(addr string) error {
 	}
 	server := &fasthttp.Server{
 		Name:            "Sankaku",
-		Handler:         fasthttp.CompressHandler(handler),
+		Handler:         fasthttp.CompressHandler(requestHandler),
 		GetOnly:         true,
 		CloseOnShutdown: true,
 	}
@@ -67,87 +64,21 @@ func listen(addr string) (net.Listener, error) {
 	return ln, nil
 }
 
-func handler(ctx *fasthttp.RequestCtx) {
+func requestHandler(ctx *fasthttp.RequestCtx) {
 	switch string(ctx.Path()) {
 	case "/favicon.ico":
 		ctx.SendFile("./static/favicon.ico")
-		return
 	case "/logo.png":
 		ctx.SendFile("./static/logo.png")
-		return
 	case "/style.css":
 		ctx.SendFile("./static/style.css")
-		return
-	}
-
-	if ctx.QueryArgs().Has("id") && ctx.QueryArgs().Has("type") {
-		id := string(ctx.QueryArgs().Peek("id"))
-		data, err := getData(id)
-		if err != nil {
-			ctx.SetStatusCode(fasthttp.StatusInternalServerError)
-			_, _ = ctx.WriteString(err.Error())
-			return
-		}
-		typ := string(ctx.QueryArgs().Peek("type"))
-		switch typ {
-		case "url":
-			ctx.Redirect(data.URL, fasthttp.StatusFound)
-		case "surl":
-			ctx.Redirect(data.Sample, fasthttp.StatusFound)
-		case "purl":
-			ctx.Redirect(data.Preview, fasthttp.StatusFound)
-		}
-		return
-	}
-
-	scheme := string(ctx.URI().Scheme())
-	if ctx.Request.Header.Peek("X-Forwarded-Proto") != nil {
-		scheme = string(ctx.Request.Header.Peek("X-Forwarded-Proto"))
-	}
-	loc := scheme + "://" + string(ctx.URI().Host()) + "/"
-
-	if ctx.QueryArgs().Has("url") {
-		URL := string(ctx.QueryArgs().Peek("url"))
-		id, err := getID(URL)
-		if err != nil {
-			render(ctx, PageData{
-				Loc:   loc,
-				Error: err.Error(),
-			})
-			return
-		}
-		data, err := getData(id)
-		if err != nil {
-			render(ctx, PageData{
-				Loc:   loc,
-				Error: err.Error(),
-			})
-			return
-		}
-		var typ string
-		if strings.Contains(data.Content, "/") {
-			typ = strings.Split(data.Content, "/")[0]
-		} else {
-			typ = data.Content
-		}
-		ori := strings.Split(URL, "?")[0]
-		render(ctx, PageData{
-			Loc:    loc,
-			Type:   typ,
-			Ori:    ori,
-			Title:  data.Name,
-			URL:    data.URL,
-			Poster: data.Preview,
-			Format: data.Content,
-			Width:  data.Width,
-			Height: data.Height,
-			Size:   data.Size,
-			ID:     data.ID,
-		})
-	} else {
-		render(ctx, PageData{
-			Loc: loc,
-		})
+	case "/redir":
+		handleRedir(ctx)
+	case "/get":
+		handleGet(ctx)
+	default:
+		loc := getBaseURL(ctx)
+		render(ctx, PageData{Loc: loc})
 	}
 }
 
@@ -165,35 +96,4 @@ func render(ctx *fasthttp.RequestCtx, data interface{}) {
 		_, _ = ctx.WriteString("Failed to execute template")
 		return
 	}
-}
-
-func getData(id string) (data *PostData, err error) {
-	d, ok := c.Get(id)
-	if ok {
-		data, ok = d.(*PostData)
-		if !ok {
-			err = errors.New("unable to get data from cache")
-		}
-	} else {
-		data, err = GetPost(id)
-		if err == nil {
-			if data.URL != "" {
-				c.Set(id, data, cache.DefaultExpiration)
-			} else {
-				err = errors.New("login required")
-			}
-		}
-	}
-	return
-}
-
-func getID(rawURL string) (string, error) {
-	URL, err := url.Parse(rawURL)
-	if err != nil {
-		return "", errors.New("cannot parse URL")
-	}
-	if path.Dir(URL.Path) != "/post/show" {
-		return "", errors.New("invalid URL")
-	}
-	return path.Base(URL.Path), nil
 }
