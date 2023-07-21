@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/url"
 	"path"
+	"strings"
 
 	"github.com/patrickmn/go-cache"
 	"github.com/valyala/fasthttp"
@@ -69,8 +70,11 @@ func getID(rawURL string) (string, error) {
 	if err != nil {
 		return "", errors.New("Cannot parse URL: " + err.Error())
 	}
-	if path.Dir(URL.Path) != "/post/show" {
+	paths := path.Clean(URL.Path)
+	_, paths, ok := strings.Cut(paths, "/post/show/")
+	if !ok {
 		return "", errors.New("Invalid URL")
 	}
-	return path.Base(URL.Path), nil
+	paths = strings.Split(paths, "/")[0]
+	return paths, nil
 }
