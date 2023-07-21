@@ -46,51 +46,8 @@
         <meta property="og:image" content="{{ .Loc }}logo.png">
         <title>Sankaku Viewer</title>
     {{ end }}
+    <link rel="stylesheet" href="style.css">
 </head>
-<style>
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-    }
-    h2 {
-        text-align: center;
-    }
-    form {
-        text-align: center;
-    }
-    input[type=text] {
-        width: 50%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        box-sizing: border-box;
-    }
-    input[type=submit] {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        font-size: 16px;
-        width: 10%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        cursor: pointer;
-    }
-    input[type=submit]:hover {
-        background-color: #45a049;
-    }
-    @media screen and (max-width: 600px) {
-        input[type=submit] {
-            width: 20%;
-        }
-    }
-    p,a {
-        text-align: center;
-    }
-    a {
-        display: block;
-    }
-    .container {
-        padding-inline: 4%;
-    }
-</style>
 <body>
     <h2>Sankaku Viewer</h2>
     <form action="get" method="get">

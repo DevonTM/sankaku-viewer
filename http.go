@@ -75,6 +75,9 @@ func handler(ctx *fasthttp.RequestCtx) {
 	case "/logo.png":
 		ctx.SendFile("./static/logo.png")
 		return
+	case "/style.css":
+		ctx.SendFile("./static/style.css")
+		return
 	}
 
 	if ctx.QueryArgs().Has("id") && ctx.QueryArgs().Has("type") {
