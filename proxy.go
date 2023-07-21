@@ -1,6 +1,7 @@
 package sankaku
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 )
@@ -18,7 +19,7 @@ func UseProxy(addr string) error {
 		return err
 	}
 	if URL.Scheme != "http" && URL.Scheme != "https" && URL.Scheme != "socks5" {
-		return url.InvalidHostError(URL.Scheme)
+		return errors.New("only http, https and socks5 proxy are supported")
 	}
 	transport.Proxy = http.ProxyURL(URL)
 	return nil
