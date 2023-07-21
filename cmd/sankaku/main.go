@@ -3,7 +3,8 @@ package main
 import (
 	"flag"
 	"log"
-	"sankaku"
+
+	"github.com/DevonTM/sankaku-viewer"
 )
 
 var (
