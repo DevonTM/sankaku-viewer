@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 )
 
@@ -42,7 +41,7 @@ func Login(username, password string) error {
 		if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
 			return errors.New("Invalid username or password")
 		}
-		return fmt.Errorf("Login request failed with status code: %d", resp.StatusCode)
+		return errors.New("Login request failed with status code: " + resp.Status)
 	}
 
 	var response map[string]interface{}
@@ -51,6 +50,6 @@ func Login(username, password string) error {
 		return errors.New("Failed to decode login token: " + err.Error())
 	}
 
-	Token = fmt.Sprintf("Bearer %v", response["access_token"])
+	Token = "Bearer " + response["access_token"].(string)
 	return nil
 }

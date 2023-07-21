@@ -3,7 +3,6 @@ package sankaku
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -33,17 +32,13 @@ type PostData struct {
 func GetPost(id string) (*PostData, error) {
 	payload := url.Values{}
 	payload.Set("lang", "en")
-	payload.Set("page", "1")
-	payload.Set("limit", "1")
 	if len(id) == 32 {
 		payload.Set("tags", "md5:"+id)
 	} else {
 		payload.Set("tags", "id_range:"+id)
 	}
 
-	query := payload.Encode()
-	URL := fmt.Sprintf("%s?%s", APIPosts, query)
-
+	URL := APIPosts + "?" + payload.Encode()
 	req, err := http.NewRequest(http.MethodGet, URL, http.NoBody)
 	if err != nil {
 		return nil, errors.New("Failed to create request: " + err.Error())
