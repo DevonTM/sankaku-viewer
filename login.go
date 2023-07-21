@@ -30,7 +30,7 @@ func Login(username, password string) error {
 
 	req.Header.Set("Accept", "application/vnd.sankaku.api+json;v=2")
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "Mozilla/5.0")
+	req.Header.Set("User-Agent", "SCChannelApp/4.0")
 
 	resp, err := client.Do(req)
 	if err != nil {
