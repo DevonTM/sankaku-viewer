@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/valyala/fasthttp v1.48.0
+	golang.org/x/net v0.12.0
 )
 
 require (
