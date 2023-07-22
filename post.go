@@ -3,9 +3,9 @@ package sankaku
 import (
 	"encoding/json"
 	"errors"
-	"io"
-	"net/http"
 	"net/url"
+
+	"github.com/valyala/fasthttp"
 )
 
 const APIPosts = "https://capi-v2.sankakucomplex.com/posts"
@@ -37,40 +37,34 @@ func GetPost(id string) (*PostData, error) {
 	} else {
 		payload.Set("tags", "id_range:"+id)
 	}
-
 	URL := APIPosts + "?" + payload.Encode()
-	req, err := http.NewRequest(http.MethodGet, URL, http.NoBody)
-	if err != nil {
-		return nil, errors.New("Failed to create request: " + err.Error())
-	}
 
+	req := fasthttp.AcquireRequest()
+	req.SetRequestURI(URL)
+	req.Header.SetMethod(fasthttp.MethodGet)
+	req.Header.SetUserAgent("SCChannelApp/4.0")
 	req.Header.Set("Accept", "application/vnd.sankaku.api+json;v=2")
-	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Origin", "https://sankaku.app")
-	req.Header.Set("Referer", "https://sankaku.app/")
-	req.Header.Set("User-Agent", "SCChannelApp/4.0")
+	req.Header.SetReferer("https://sankaku.app/")
 	if Token != "" {
 		req.Header.Set("Authorization", Token)
 	}
 
-	resp, err := client.Do(req)
+	resp := fasthttp.AcquireResponse()
+	err := client.Do(req, resp)
+	fasthttp.ReleaseRequest(req)
+	defer fasthttp.ReleaseResponse(resp)
 	if err != nil {
 		return nil, errors.New("Failed to send request: " + err.Error())
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("Failed to get data, HTTP status code: " + resp.Status)
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.New("Failed to read response body: " + err.Error())
+	if resp.StatusCode() != fasthttp.StatusOK {
+		return nil, errors.New("Failed to get data, HTTP status: " + string(resp.Header.StatusMessage()))
 	}
 
 	var data []PostData
-	if err = json.Unmarshal(body, &data); err != nil {
-		return nil, errors.New("Failed to parse response body: " + err.Error())
+	if err = json.Unmarshal(resp.Body(), &data); err != nil {
+		return nil, errors.New("Failed to unmarshal response body: " + err.Error())
 	}
 
 	data[0].Name = getName(data[0].Tags)
