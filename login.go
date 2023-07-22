@@ -18,7 +18,7 @@ func Login(username, password string) error {
 	}
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		return errors.New("Failed to marshal login payload: " + err.Error())
+		return errors.New("failed to marshal login payload: " + err.Error())
 	}
 
 	req := fasthttp.AcquireRequest()
@@ -34,19 +34,19 @@ func Login(username, password string) error {
 	fasthttp.ReleaseRequest(req)
 	defer fasthttp.ReleaseResponse(resp)
 	if err != nil {
-		return errors.New("Failed to send login request: " + err.Error())
+		return errors.New("failed to send login request: " + err.Error())
 	}
 
 	if resp.StatusCode() != fasthttp.StatusOK {
 		if resp.StatusCode() == fasthttp.StatusUnauthorized || resp.StatusCode() == fasthttp.StatusForbidden {
-			return errors.New("Invalid username or password")
+			return errors.New("invalid username or password")
 		}
-		return errors.New("Failed to login, HTTP status: " + string(resp.Header.StatusMessage()))
+		return errors.New("failed to login, HTTP status: " + string(resp.Header.StatusMessage()))
 	}
 
 	var response map[string]interface{}
 	if err = json.Unmarshal(resp.Body(), &response); err != nil {
-		return errors.New("Failed to unmarshal login response: " + err.Error())
+		return errors.New("failed to unmarshal login response: " + err.Error())
 	}
 
 	Token = "Bearer " + response["access_token"].(string)
