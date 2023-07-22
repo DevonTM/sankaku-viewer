@@ -4,6 +4,12 @@ NAME=sankaku-viewer
 OS=$1
 ARCH=$2
 
+if [[ "$OS" == "" ]] || [[ "$ARCH" == "" ]]; then
+    echo "Missing arguments."
+    echo "Usage: build.sh <os> <arch>"
+    exit 1
+fi
+
 if [[ "$ARCH" == "386" ]]; then
     DIR="$NAME-$OS-x86"
 else
