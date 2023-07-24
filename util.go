@@ -57,10 +57,10 @@ func getName(tags []Tag) string {
 	switch {
 	case names[0] != "" && names[1] != "":
 		return names[0] + " - " + names[1]
-	case names[0] == "":
-		return names[1]
-	case names[1] == "":
+	case names[0] != "":
 		return names[0]
+	case names[1] != "":
+		return names[1]
 	}
 	return "Sankaku Content"
 }
