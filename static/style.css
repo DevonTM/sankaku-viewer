@@ -44,8 +44,30 @@ p,a {
 
 a {
     display: block;
+    padding-block: 4px;
 }
 
 .container {
-    padding-inline: 4%;
+    padding-inline: 2%;
+}
+
+@media screen and (min-width: 600px) {
+    .image-container img,
+    .video-container video {
+        max-width: 100%;
+        max-height: calc(100vh - 200px);
+        display: block;
+        margin: 0 auto;
+    }
+
+    .video-container {
+        width: fit-content;
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .image-container img {
+        width: 100%;
+    }
 }

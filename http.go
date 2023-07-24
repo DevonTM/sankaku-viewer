@@ -72,6 +72,8 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 		ctx.SendFile("./static/logo.png")
 	case "/style.css":
 		ctx.SendFile("./static/style.css")
+	case "/player.js":
+		ctx.SendFile("./static/player.js")
 	case "/redir":
 		handleRedir(ctx)
 	case "/get":

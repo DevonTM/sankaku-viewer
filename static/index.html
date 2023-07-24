@@ -7,7 +7,6 @@
     <meta name="referrer" content="no-referrer">
     <meta name="description" content="Sankaku Content Grabber">
     <meta property="og:title" content="Sankaku Viewer">
-    
     {{ if .URL }}
         <meta property="og:url" content="{{ .Loc }}get?url={{ .Ori }}">
         <meta property="og:type" content="{{ .Type }}">
@@ -60,47 +59,18 @@
     {{ else if .URL }}
         <a href="{{ .URL }}" style="padding-bottom: 1%;" download><b>download</b></a>
         {{ if eq .Type "image" }}
-            <div class="container">
-                <img src="{{ .URL }}" alt="{{ .Format }}" style="width: 100%;">
+            <div class="container image-container">
+                <img src="{{ .URL }}" alt="{{ .Format }}">
             </div>
         {{ else if eq .Type "video" }}
-            <div class="container">
-                <video id="video-id"><source src="{{ .URL }}" type="{{ .Format }}" />
+            <div class="container video-container">
+                <video id="video-id">
+                    <source src="{{ .URL }}" type="{{ .Format }}" />
+                </video>
             </div>
-            <script>
-                var myFP = fluidPlayer(
-                    'video-id', {
-                        "layoutControls": {
-                            "controlBar": {
-                                "autoHideTimeout": 3,
-                                "animated": true,
-                                "autoHide": true
-                            },
-                            "htmlOnPauseBlock": {
-                                "html": null,
-                                "height": null,
-                                "width": null
-                            },
-                            "autoPlay": false,
-                            "mute": false,
-                            "allowTheatre": true,
-                            "playPauseAnimation": true,
-                            "playbackRateEnabled": false,
-                            "allowDownload": false,
-                            "playButtonShowing": true,
-                            "fillToContainer": true,
-                            "posterImage": "{{ .Poster }}"
-                        },
-                        "vastOptions": {
-                            "adList": [],
-                            "adCTAText": false,
-                            "adCTATextPosition": ""
-                        }
-                    }
-                );
-            </script>
+            <script src="player.js"></script>
         {{ end }}
-        <a href="{{ .Ori }}"><b>source</b></a>
+        <a href="{{ .Ori }}" target="_blank"><b>source</b></a>
     {{ end }}
 </body>
 </html>
