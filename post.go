@@ -13,7 +13,6 @@ const APIPosts = "https://capi-v2.sankakucomplex.com/posts"
 type Tag struct {
 	Name string `json:"name"`
 	Type int    `json:"type"`
-	ID   int    `json:"id"`
 }
 
 type PostData struct {
