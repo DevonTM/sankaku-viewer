@@ -1,6 +1,6 @@
 module github.com/DevonTM/sankaku-viewer
 
-go 1.19
+go 1.20
 
 require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
