@@ -28,3 +28,4 @@ var myFP = fluidPlayer(
         }
     }
 );
+document.getElementById("video-id").loop = true;
