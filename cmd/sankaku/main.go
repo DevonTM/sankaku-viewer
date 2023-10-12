@@ -8,7 +8,7 @@ import (
 	"github.com/DevonTM/sankaku-viewer"
 )
 
-const VERSION = "v1.6"
+const VERSION = "v1.6.1"
 
 var (
 	listen   = flag.String("l", ":8000", "Listen address")
