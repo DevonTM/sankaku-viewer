@@ -9,7 +9,7 @@ require (
 )
 
 require (
-	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/klauspost/compress v1.17.0 // indirect
+	github.com/andybalholm/brotli v1.0.6 // indirect
+	github.com/klauspost/compress v1.17.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 )
