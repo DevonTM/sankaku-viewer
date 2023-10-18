@@ -35,6 +35,7 @@
             <meta property="og:video:width" content="{{ .Width }}">
             <meta property="og:video:height" content="{{ .Height }}">
             <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
+            <script src="player.js"></script>
         {{ end }}
         <title>{{ .Title }}</title>
     {{ else }}
@@ -49,10 +50,11 @@
 </head>
 <body>
     <h2>Sankaku Viewer</h2>
-    <form action="get" method="get">
-        <label for="input">Sankaku URL:</label>
-        <input type="text" name="url" id="input" placeholder="https://sankaku.app/post/show/id">
-        <input type="submit" id="submit" value="GET">
+    <form action="get" method="get" id="form-id">
+        <label for="inputURL">Sankaku URL:</label>
+        <input type="text" id="inputURL" placeholder="https://sankaku.app/post/show/12345678">
+        <input type="hidden" id="inputID" name="id">
+        <input type="submit" value="GET">
     </form>
     {{ if .Error }}
         <p>{{ .Error }}</p>
@@ -68,9 +70,9 @@
                     <source src="{{ .URL }}" type="{{ .Format }}"/>
                 </video>
             </div>
-            <script src="player.js"></script>
         {{ end }}
         <a href="{{ .Ori }}" target="_blank"><b>source</b></a>
     {{ end }}
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package sankaku
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/valyala/fasthttp"
@@ -10,7 +11,7 @@ func handleRedir(ctx *fasthttp.RequestCtx) {
 	id := string(ctx.QueryArgs().Peek("id"))
 	if id == "" {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
-		_, _ = ctx.WriteString("Missing id")
+		_, _ = ctx.WriteString("Missing Post ID")
 		return
 	}
 	typ := string(ctx.QueryArgs().Peek("type"))
@@ -39,12 +40,33 @@ func handleRedir(ctx *fasthttp.RequestCtx) {
 
 func handleGet(ctx *fasthttp.RequestCtx) {
 	loc := getBaseURL(ctx)
-	URL := string(ctx.QueryArgs().Peek("url"))
-	id, err := getID(URL)
-	if err != nil {
+	var id, ori string
+	if ctx.QueryArgs().Has("id") {
+		id = string(ctx.QueryArgs().Peek("id"))
+		if _, err := strconv.Atoi(id); err != nil {
+			render(ctx, PageData{
+				Loc:   loc,
+				Error: "Invalid Post ID",
+			})
+			return
+		}
+		ori = "https://sankaku.app/post/show/" + id
+	} else if ctx.QueryArgs().Has("url") {
+		URL := string(ctx.QueryArgs().Peek("url"))
+		var err error
+		id, err = getID(URL)
+		if err != nil {
+			render(ctx, PageData{
+				Loc:   loc,
+				Error: err.Error(),
+			})
+			return
+		}
+		ori = strings.Split(URL, "?")[0]
+	} else {
 		render(ctx, PageData{
 			Loc:   loc,
-			Error: err.Error(),
+			Error: "Missing Post ID or URL",
 		})
 		return
 	}
@@ -62,7 +84,6 @@ func handleGet(ctx *fasthttp.RequestCtx) {
 	} else {
 		typ = data.Content
 	}
-	ori := strings.Split(URL, "?")[0]
 	render(ctx, PageData{
 		Loc:    loc,
 		Type:   typ,
