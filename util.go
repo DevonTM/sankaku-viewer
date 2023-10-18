@@ -46,24 +46,25 @@ func getData(id string) (data *PostData, err error) {
 }
 
 func getName(tags []Tag) string {
-	var names [2]string
+	var series, names string
+	var characters []string
 	for _, tag := range tags {
 		if tag.Type == 3 {
-			names[1] = tag.Name
+			series = tag.Name
 		} else if tag.Type == 4 {
-			names[0] = tag.Name
-		}
-		if names[0] != "" && names[1] != "" {
-			break
+			characters = append(characters, tag.Name)
 		}
 	}
+	if len(characters) > 0 {
+		names = strings.Join(characters, " - ")
+	}
 	switch {
-	case names[0] != "" && names[1] != "":
-		return names[0] + " - " + names[1]
-	case names[0] != "":
-		return names[0]
-	case names[1] != "":
-		return names[1]
+	case series != "" && names != "":
+		return names + " - " + series
+	case series != "":
+		return series
+	case names != "":
+		return names
 	}
 	return "Sankaku Content"
 }
