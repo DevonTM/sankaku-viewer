@@ -33,7 +33,7 @@ func ListenAndServe(addr string) error {
 	}
 	server := &fasthttp.Server{
 		Name:            "Sankaku",
-		Handler:         fasthttp.CompressHandler(requestHandler),
+		Handler:         fasthttp.CompressHandlerBrotliLevel(requestHandler, 3, 9),
 		GetOnly:         true,
 		CloseOnShutdown: true,
 	}
