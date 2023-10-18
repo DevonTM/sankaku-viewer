@@ -8,7 +8,7 @@
     <meta name="description" content="Sankaku Content Grabber">
     <meta property="og:title" content="Sankaku Viewer">
     {{ if .URL }}
-        <meta property="og:url" content="{{ .Loc }}get?url={{ .Ori }}">
+        <meta property="og:url" content="{{ .Loc }}get?id={{ .ID }}">
         <meta property="og:type" content="{{ .Type }}">
         <meta property="og:description" content="{{ .Title }} ({{ .Type }})">
         <meta property="og:image:alt" content="{{ .Size }} bytes">
