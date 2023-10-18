@@ -5,9 +5,7 @@ import (
 	"net"
 	"os"
 	"strings"
-	"time"
 
-	"github.com/patrickmn/go-cache"
 	"github.com/valyala/fasthttp"
 )
 
@@ -26,7 +24,7 @@ type PageData struct {
 	ID     int
 }
 
-var c = cache.New(10*time.Minute, 1*time.Hour)
+var serveFile = fileHandler("static")
 
 func ListenAndServe(addr string) error {
 	ln, err := listen(addr)
@@ -65,20 +63,12 @@ func listen(addr string) (net.Listener, error) {
 }
 
 func requestHandler(ctx *fasthttp.RequestCtx) {
-	switch string(ctx.Path()) {
-	case "/favicon.ico":
-		ctx.SendFile("./static/favicon.ico")
-	case "/logo.png":
-		ctx.SendFile("./static/logo.png")
-	case "/style.css":
-		ctx.SendFile("./static/style.css")
-	case "/script.js":
-		ctx.SendFile("./static/script.js")
-	case "/player.js":
-		ctx.SendFile("./static/player.js")
-	case "/redir":
+	switch path := string(ctx.Path()); {
+	case isValidExt(path):
+		serveFile(ctx)
+	case path == "/redir":
 		handleRedir(ctx)
-	case "/get":
+	case path == "/get":
 		handleGet(ctx)
 	default:
 		loc := getBaseURL(ctx)

@@ -7,6 +7,17 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+func fileHandler(root string) fasthttp.RequestHandler {
+	fs := &fasthttp.FS{
+		Root:            root,
+		CompressRoot:    root + "/.cache",
+		Compress:        true,
+		CompressBrotli:  true,
+		AcceptByteRange: true,
+	}
+	return fs.NewRequestHandler()
+}
+
 func handleRedir(ctx *fasthttp.RequestCtx) {
 	id := string(ctx.QueryArgs().Peek("id"))
 	if id == "" {

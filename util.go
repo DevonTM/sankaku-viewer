@@ -5,10 +5,13 @@ import (
 	"net/url"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/patrickmn/go-cache"
 	"github.com/valyala/fasthttp"
 )
+
+var c = cache.New(10*time.Minute, 1*time.Hour)
 
 func getBaseURL(ctx *fasthttp.RequestCtx) string {
 	scheme := string(ctx.URI().Scheme())
@@ -77,4 +80,14 @@ func getID(rawURL string) (string, error) {
 	}
 	paths = strings.Split(paths, "/")[0]
 	return paths, nil
+}
+
+func isValidExt(fileName string) bool {
+	extensions := []string{".css", ".ico", ".js", ".png"}
+	for _, ext := range extensions {
+		if strings.HasSuffix(fileName, ext) {
+			return true
+		}
+	}
+	return false
 }
