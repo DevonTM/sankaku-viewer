@@ -10,7 +10,7 @@ document.getElementById("form-id").onsubmit = function () {
 };
 
 function isValidURL(url) {
-    var regex = /^https:\/\/[^/]+\/post\/show\/\d+(\?.*)?$/;
+    var regex = /^https:\/\/[^/]+\/(?:[a-z]{2}\/)?post\/show\/\d+(\?.*)?$/;
     return regex.test(url);
 }
 
