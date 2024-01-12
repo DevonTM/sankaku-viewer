@@ -30,12 +30,7 @@ type PostData struct {
 
 func GetPost(id string) (*PostData, error) {
 	payload := url.Values{}
-	payload.Set("lang", "en")
-	if len(id) == 32 {
-		payload.Set("tags", "md5:"+id)
-	} else {
-		payload.Set("tags", "id_range:"+id)
-	}
+	payload.Set("tags", "id:"+id)
 	URL := APIPosts + "?" + payload.Encode()
 
 	req := fasthttp.AcquireRequest()
