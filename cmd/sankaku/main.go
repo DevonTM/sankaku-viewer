@@ -11,12 +11,13 @@ import (
 const VERSION = "v1.7.2"
 
 var (
-	listen   = flag.String("l", ":8000", "Listen address")
-	proxy    = flag.String("p", "", "Proxy address")
-	username = flag.String("user", "", "Username")
-	password = flag.String("pass", "", "Password")
-	cache    = flag.Bool("cache", true, "Enable cache for compressed files")
-	version  = flag.Bool("version", false, "Print Version")
+	listen        = flag.String("l", ":8000", "Listen address")
+	proxy         = flag.String("p", "", "Proxy address")
+	username      = flag.String("user", "", "Username")
+	password      = flag.String("pass", "", "Password")
+	cache         = flag.Bool("cache", true, "Enable cache for compressed files")
+	CacheDuration = flag.Int("cache-duration", 600, "Set cache duration in seconds for cached posts data")
+	version       = flag.Bool("version", false, "Print Version")
 )
 
 func main() {
@@ -40,6 +41,7 @@ func main() {
 	}
 
 	sankaku.CacheCompressed = *cache
+	sankaku.CacheDuration = *CacheDuration
 
 	log.Println("Listening HTTP Server on:", *listen)
 	if err := sankaku.ListenAndServe(*listen); err != nil {

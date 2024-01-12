@@ -11,7 +11,10 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-var c = cache.New(10*time.Minute, 1*time.Hour)
+var (
+	CacheDuration = 600 // in seconds, should be less than 1 hour
+	c             = cache.New(time.Duration(CacheDuration)*time.Minute, 1*time.Hour)
+)
 
 func getBaseURL(ctx *fasthttp.RequestCtx) string {
 	scheme := string(ctx.URI().Scheme())
