@@ -11,12 +11,12 @@ import (
 const VERSION = "v1.7.2"
 
 var (
-	listen        = flag.String("l", ":8000", "Listen address")
-	proxy         = flag.String("p", "", "Proxy address")
-	username      = flag.String("user", "", "Username")
-	password      = flag.String("pass", "", "Password")
-	cache         = flag.Bool("cache", true, "Enable cache for compressed files")
-	CacheDuration = flag.Int("cache-duration", 600, "Set cache duration in seconds for cached posts data")
+	listen        = flag.String("l", ":8000", "HTTP server listen address")
+	proxy         = flag.String("p", "", "Proxy address,\nonly http and socks5 proxy are supported")
+	username      = flag.String("user", "", "Sankaku username")
+	password      = flag.String("pass", "", "Sankaku password")
+	cache         = flag.Bool("cache", true, "Enable cache for compressed static files")
+	CacheDuration = flag.Int("cache-duration", 600, "Set cache duration in seconds for cached posts data,\nset 0 to never expire, should be less than 1 hour")
 	version       = flag.Bool("version", false, "Print Version")
 )
 
