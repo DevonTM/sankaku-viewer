@@ -39,7 +39,7 @@ func GetPost(id string) (*PostData, error) {
 	req.Header.SetUserAgent("SCChannelApp/4.0")
 	req.Header.Set("Accept", "application/vnd.sankaku.api+json;v=2")
 	req.Header.Set("Origin", "https://sankaku.app")
-	req.Header.SetReferer("https://sankaku.app/")
+	req.Header.SetReferer("https://sankaku.app/posts/" + id)
 	if Token != "" {
 		req.Header.Set("Authorization", Token)
 	}

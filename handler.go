@@ -1,7 +1,6 @@
 package sankaku
 
 import (
-	"strconv"
 	"strings"
 
 	"github.com/valyala/fasthttp"
@@ -54,14 +53,7 @@ func handleGet(ctx *fasthttp.RequestCtx) {
 	var id, ori string
 	if ctx.QueryArgs().Has("id") {
 		id = string(ctx.QueryArgs().Peek("id"))
-		if _, err := strconv.Atoi(id); err != nil {
-			render(ctx, PageData{
-				Loc:   loc,
-				Error: "Invalid Post ID",
-			})
-			return
-		}
-		ori = "https://sankaku.app/post/show/" + id
+		ori = "https://sankaku.app/posts/" + id
 	} else if ctx.QueryArgs().Has("url") {
 		URL := string(ctx.QueryArgs().Peek("url"))
 		var err error

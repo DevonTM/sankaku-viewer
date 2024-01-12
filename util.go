@@ -75,7 +75,7 @@ func getID(rawURL string) (string, error) {
 		return "", errors.New("Cannot parse URL: " + err.Error())
 	}
 	paths := path.Clean(URL.Path)
-	_, paths, ok := strings.Cut(paths, "/post/show/")
+	_, paths, ok := strings.Cut(paths, "/posts/")
 	if !ok {
 		return "", errors.New("Invalid URL")
 	}

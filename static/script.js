@@ -4,13 +4,13 @@ document.getElementById("form-id").onsubmit = function () {
         var id = getIdFromURL(urlInput);
         document.getElementById("inputID").value = id;
     } else {
-        alert("Invalid URL. Please use a URL in the format: https://sankaku.app/post/show/12345678");
+        alert("Invalid URL. Please use a URL in the format: https://sankaku.app/posts/aBcD1234");
         return false;
     }
 };
 
 function isValidURL(url) {
-    var regex = /^https:\/\/[^/]+\/(?:[a-z]{2}\/)?post\/show\/\d+(\?.*)?$/;
+    var regex = /^https:\/\/[^/]+\/(?:[a-z]{2}\/)?posts\/\w+(\?.*)?$/;
     return regex.test(url);
 }
 
