@@ -6,11 +6,13 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+var CacheCompressed bool
+
 func fileHandler(root string) fasthttp.RequestHandler {
 	fs := &fasthttp.FS{
 		Root:            root,
 		CompressRoot:    root + "/.cache",
-		Compress:        true,
+		Compress:        CacheCompressed,
 		CompressBrotli:  true,
 		AcceptByteRange: true,
 	}

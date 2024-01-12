@@ -15,6 +15,7 @@ var (
 	proxy    = flag.String("p", "", "Proxy address")
 	username = flag.String("user", "", "Username")
 	password = flag.String("pass", "", "Password")
+	cache    = flag.Bool("cache", true, "Enable cache for compressed files")
 	version  = flag.Bool("version", false, "Print Version")
 )
 
@@ -24,7 +25,7 @@ func main() {
 		fmt.Println("Sankaku Viewer " + VERSION)
 		return
 	}
-	
+
 	if *proxy != "" {
 		if err := sankaku.UseProxy(*proxy); err != nil {
 			log.Fatalln(err)
@@ -37,6 +38,8 @@ func main() {
 			log.Fatalln(err)
 		}
 	}
+
+	sankaku.CacheCompressed = *cache
 
 	log.Println("Listening HTTP Server on:", *listen)
 	if err := sankaku.ListenAndServe(*listen); err != nil {
