@@ -13,7 +13,7 @@
         <meta property="og:description" content="{{ .Title }} ({{ .Type }})">
         <meta property="og:image:alt" content="{{ .Size }} bytes">
         {{ if eq .Type "image" }}
-            <meta property="og:image" content="{{ .Loc }}redir?id={{ .ID }}&type=url">
+            <meta property="og:image" content="{{ .Loc }}redir{{ .Ext }}?id={{ .ID }}&type=url">
             <meta property="og:image:type" content="{{ .Format }}">
             <meta property="og:image:width" content="{{ .Width }}">
             <meta property="og:image:height" content="{{ .Height }}">
@@ -21,16 +21,16 @@
             <meta name="twitter:title" content="Sankaku Viewer">
             <meta name="twitter:site" content="@sankakucomplex">
             {{ if le .Size 5242880 }}
-                <meta name="twitter:description" content="{{ .Title }} ({{ .Type }})">
-                <meta name="twitter:image" content="{{ .Loc }}redir?id={{ .ID }}&type=url">
+                <meta name="twitter:description" content="{{ .Title }} (image)">
+                <meta name="twitter:image" content="{{ .Loc }}redir{{ .Ext }}?id={{ .ID }}&type=url">
             {{ else }}
-                <meta name="twitter:description" content="{{ .Title }} (compressed {{ .Type }})">
-                <meta name="twitter:image" content="{{ .Loc }}redir?id={{ .ID }}&type=surl">
+                <meta name="twitter:description" content="{{ .Title }} (compressed image)">
+                <meta name="twitter:image" content="{{ .Loc }}redir{{ .Ext }}?id={{ .ID }}&type=surl">
             {{ end }}
             <meta name="twitter:image:alt" content="{{ .Size }} bytes">
         {{ else if eq .Type "video" }}
-            <meta property="og:image" content="{{ .Loc }}redir?id={{ .ID }}&type=purl">
-            <meta property="og:video" content="{{ .Loc }}redir?id={{ .ID }}&type=url">
+            <meta property="og:image" content="{{ .Loc }}redir.jpg?id={{ .ID }}&type=purl">
+            <meta property="og:video" content="{{ .Loc }}redir{{ .Ext }}?id={{ .ID }}&type=url">
             <meta property="og:video:type" content="{{ .Format }}">
             <meta property="og:video:width" content="{{ .Width }}">
             <meta property="og:video:height" content="{{ .Height }}">

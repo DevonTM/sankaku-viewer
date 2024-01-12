@@ -83,15 +83,17 @@ func handleGet(ctx *fasthttp.RequestCtx) {
 		})
 		return
 	}
-	var typ string
+	var typ, ext string
 	if strings.Contains(data.Content, "/") {
 		typ = strings.Split(data.Content, "/")[0]
+		ext = "." + strings.Split(data.Content, "/")[1]
 	} else {
 		typ = data.Content
 	}
 	render(ctx, PageData{
 		Loc:    loc,
 		Type:   typ,
+		Ext:    ext,
 		Ori:    ori,
 		Title:  data.Name,
 		URL:    data.URL,

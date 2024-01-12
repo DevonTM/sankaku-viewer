@@ -16,6 +16,7 @@ type PageData struct {
 	Poster string
 	Type   string
 	Format string
+	Ext    string
 	Ori    string
 	Error  string
 	Width  int
@@ -64,12 +65,12 @@ func listen(addr string) (net.Listener, error) {
 
 func requestHandler(ctx *fasthttp.RequestCtx) {
 	switch path := string(ctx.Path()); {
-	case isValidExt(path):
-		serveFile(ctx)
-	case path == "/redir":
-		handleRedir(ctx)
 	case path == "/get":
 		handleGet(ctx)
+	case strings.HasPrefix(path, "/redir"):
+		handleRedir(ctx)
+	case isValidExt(path):
+		serveFile(ctx)
 	default:
 		loc := getBaseURL(ctx)
 		render(ctx, PageData{Loc: loc})
