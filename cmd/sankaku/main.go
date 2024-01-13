@@ -41,7 +41,7 @@ func main() {
 	}
 
 	sankaku.CacheCompressed = *cache
-	sankaku.CacheDuration = *CacheDuration
+	sankaku.SetCacheDuration(*CacheDuration)
 
 	log.Println("Listening HTTP Server on:", *listen)
 	if err := sankaku.ListenAndServe(*listen); err != nil {

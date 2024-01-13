@@ -12,9 +12,16 @@ import (
 )
 
 var (
-	CacheDuration = 600 // in seconds, should be less than 1 hour
-	c             = cache.New(time.Duration(CacheDuration)*time.Minute, 1*time.Hour)
+	cacheTTL time.Duration = 10 * time.Minute
+	c                      = cache.New(cache.DefaultExpiration, 1*time.Hour)
 )
+
+func SetCacheDuration(seconds int) {
+	if seconds > 3600 {
+		seconds = 3600
+	}
+	cacheTTL = time.Duration(seconds) * time.Second
+}
 
 func getBaseURL(ctx *fasthttp.RequestCtx) string {
 	scheme := string(ctx.URI().Scheme())
@@ -39,7 +46,7 @@ func getData(id string) (data *PostData, err error) {
 		data, err = GetPost(id)
 		if err == nil {
 			if data.URL != "" {
-				c.Set(id, data, cache.DefaultExpiration)
+				c.Set(id, data, cacheTTL)
 			} else {
 				err = errors.New("Login required")
 			}
