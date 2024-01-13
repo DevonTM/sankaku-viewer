@@ -25,7 +25,7 @@ type PageData struct {
 	ID     int
 }
 
-var serveFile = fileHandler("static")
+var serveFile fasthttp.RequestHandler
 
 func ListenAndServe(addr string) error {
 	ln, err := listen(addr)
@@ -38,6 +38,7 @@ func ListenAndServe(addr string) error {
 		GetOnly:         true,
 		CloseOnShutdown: true,
 	}
+	serveFile = fileHandler("static")
 	err = server.Serve(ln)
 	return err
 }
