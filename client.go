@@ -61,7 +61,7 @@ func dialerHTTPProxy(p *url.URL) fasthttp.DialFunc {
 			conn.Close()
 			return nil, err
 		}
-		if !strings.HasPrefix(string(buf[:n]), "HTTP/1.1 200 Connection established") {
+		if !strings.HasPrefix(strings.ToLower(string(buf[:n])), "http/1.1 200 connection established") {
 			conn.Close()
 			return nil, errors.New("proxy error: \n" + string(buf[:n]))
 		}
