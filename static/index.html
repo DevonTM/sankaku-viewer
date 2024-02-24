@@ -11,7 +11,7 @@
         <meta property="og:url" content="{{ .Loc }}get?id={{ .ID }}">
         <meta property="og:type" content="{{ .Type }}">
         <meta property="og:description" content="{{ .Title }} ({{ .Type }})">
-        <meta property="og:image:alt" content="{{ .Size }} bytes">
+        <meta property="og:image:alt" content="{{ .ID }}{{ .Ext }}">
         {{ if eq .Type "image" }}
             <meta property="og:image" content="{{ .Loc }}redir{{ .Ext }}?id={{ .ID }}&type=url">
             <meta property="og:image:type" content="{{ .Format }}">
@@ -25,11 +25,11 @@
                 <meta name="twitter:image" content="{{ .Loc }}redir{{ .Ext }}?id={{ .ID }}&type=url">
             {{ else }}
                 <meta name="twitter:description" content="{{ .Title }} (compressed image)">
-                <meta name="twitter:image" content="{{ .Loc }}redir{{ .Ext }}?id={{ .ID }}&type=surl">
+                <meta name="twitter:image" content="{{ .Loc }}redir.jpeg?id={{ .ID }}&type=surl">
             {{ end }}
-            <meta name="twitter:image:alt" content="{{ .Size }} bytes">
+            <meta name="twitter:image:alt" content="{{ .ID }}{{ .Ext }}">
         {{ else if eq .Type "video" }}
-            <meta property="og:image" content="{{ .Loc }}redir.jpg?id={{ .ID }}&type=purl">
+            <meta property="og:image" content="{{ .Loc }}redir.jpeg?id={{ .ID }}&type=purl">
             <meta property="og:video" content="{{ .Loc }}redir{{ .Ext }}?id={{ .ID }}&type=url">
             <meta property="og:video:type" content="{{ .Format }}">
             <meta property="og:video:width" content="{{ .Width }}">
@@ -42,7 +42,7 @@
         <meta property="og:url" content="{{ .Loc }}">
         <meta property="og:type" content="website">
         <meta property="og:description" content="Sankaku Content Grabber">
-        <meta property="og:image:alt" content="27522 bytes">
+        <meta property="og:image:alt" content="logo.png">
         <meta property="og:image" content="{{ .Loc }}logo.png">
         <title>Sankaku Viewer</title>
     {{ end }}
@@ -62,7 +62,7 @@
         <a href="{{ .URL }}" style="padding-bottom: 1%;" download><b>download</b></a>
         {{ if eq .Type "image" }}
             <div class="container image-container">
-                <img src="{{ .URL }}" alt="{{ .Format }}">
+                <img src="{{ .URL }}" alt="{{ .ID }}{{ .Ext }}">
             </div>
         {{ else if eq .Type "video" }}
             <div class="container video-container">
