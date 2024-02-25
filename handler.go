@@ -1,6 +1,7 @@
 package sankaku
 
 import (
+	"html/template"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,6 +12,8 @@ import (
 var (
 	Root            string
 	CacheCompressed bool
+
+	index *template.Template
 )
 
 func init() {
@@ -20,6 +23,8 @@ func init() {
 	}
 	execDir := filepath.Dir(execPath)
 	Root = filepath.Join(execDir, "static")
+
+	index = template.Must(template.ParseFiles(filepath.Join(Root, "index.html")))
 }
 
 func fileHandler() fasthttp.RequestHandler {

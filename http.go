@@ -1,10 +1,8 @@
 package sankaku
 
 import (
-	"html/template"
 	"net"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/valyala/fasthttp"
@@ -80,17 +78,10 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 }
 
 func render(ctx *fasthttp.RequestCtx, data interface{}) {
-	page := filepath.Join(Root, "index.html")
-	t, err := template.ParseFiles(page)
+	ctx.SetContentType("text/html; charset=utf-8")
+	err := index.Execute(ctx, data)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
-		_, _ = ctx.WriteString("Failed to parse template")
-		return
-	}
-	ctx.SetContentType("text/html; charset=utf-8")
-	if err = t.Execute(ctx, data); err != nil {
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
-		_, _ = ctx.WriteString("Failed to execute template")
-		return
+		_, _ = ctx.WriteString("Failed to render page")
 	}
 }
