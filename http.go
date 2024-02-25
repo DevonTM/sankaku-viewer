@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"net"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/valyala/fasthttp"
@@ -38,7 +39,7 @@ func ListenAndServe(addr string) error {
 		GetOnly:         true,
 		CloseOnShutdown: true,
 	}
-	serveFile = fileHandler("static")
+	serveFile = fileHandler()
 	err = server.Serve(ln)
 	return err
 }
@@ -79,7 +80,7 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 }
 
 func render(ctx *fasthttp.RequestCtx, data interface{}) {
-	page := "./static/index.html"
+	page := filepath.Join(Root, "index.html")
 	t, err := template.ParseFiles(page)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)

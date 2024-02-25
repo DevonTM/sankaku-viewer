@@ -1,17 +1,31 @@
 package sankaku
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/valyala/fasthttp"
 )
 
-var CacheCompressed bool
+var (
+	Root            string
+	CacheCompressed bool
+)
 
-func fileHandler(root string) fasthttp.RequestHandler {
+func init() {
+	execPath, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	execDir := filepath.Dir(execPath)
+	Root = filepath.Join(execDir, "static")
+}
+
+func fileHandler() fasthttp.RequestHandler {
 	fs := &fasthttp.FS{
-		Root:            root,
-		CompressRoot:    root + "/.cache",
+		Root:            Root,
+		CompressRoot:    filepath.Join(Root, ".cache"),
 		Compress:        CacheCompressed,
 		CompressBrotli:  true,
 		AcceptByteRange: true,
